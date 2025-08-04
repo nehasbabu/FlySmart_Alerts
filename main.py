@@ -2,7 +2,7 @@ import requests
 import time
 import smtplib
 from twilio.rest import Client
-from datetime import datetime
+from datetime import datetime,timedelta
 import os
 from dotenv import load_dotenv
 load_dotenv(dotenv_path="hey.env")
@@ -49,11 +49,14 @@ def iata_update(city_list):
 def msg(city_list):
     for city in city_list:
         iata = city['iataCode']
+        tomorrow = datetime.now() + timedelta(days=1)
+        six_month_from_today = datetime.now() + timedelta(days=(6 * 30))
         def get_flight_data(non_stop: str):
             params = {
                 "originLocationCode": "BLR",
                 "destinationLocationCode": iata,
-                "departureDate": datetime.now().strftime('%Y-%m-%d'),
+                "departureDate": tomorrow.strftime("%Y-%m-%d"),
+                "returnDate": six_month_from_today.strftime("%Y-%m-%d"),
                 "adults": 1,
                 "nonStop": non_stop.lower(),
                 "currencyCode": "GBP",
